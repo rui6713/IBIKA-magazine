@@ -31,17 +31,79 @@ body {
 .magazine {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+
+    perspective: 1800px;
+
+    overflow: hidden;
 }
 
+/* ページ */
 .page {
+    position: absolute;
+
     width: 100%;
     height: 100%;
+
+    left: 0;
+    top: 0;
+
     object-fit: contain;
+
     user-select: none;
     -webkit-user-drag: none;
+
+    transform-origin: center left;
+
+    backface-visibility: hidden;
+
+    transition:
+        transform 0.55s cubic-bezier(.4,0,.2,1),
+        filter 0.55s ease;
+
+    will-change: transform;
+}
+
+/* 左へめくる */
+.turn-left {
+    transform:
+        rotateY(-90deg)
+        scale(0.96);
+
+    filter: brightness(0.75);
+}
+
+/* 右へめくる */
+.turn-right {
+    transform-origin: center right;
+
+    transform:
+        rotateY(90deg)
+        scale(0.96);
+
+    filter: brightness(0.75);
+}
+
+/* 次のページ */
+.next-page {
+    transform:
+        rotateY(90deg)
+        scale(0.96);
+
+    transform-origin: center right;
+
+    filter: brightness(0.75);
+}
+
+/* 前のページ */
+.prev-page {
+    transform:
+        rotateY(-90deg)
+        scale(0.96);
+
+    transform-origin: center left;
+
+    filter: brightness(0.75);
 }
 
 </style>
@@ -51,9 +113,9 @@ body {
 
 <div class="magazine">
 
-<img id="page"
-     class="page"
-     src="page1.jpg">
+    <img id="page"
+         class="page"
+         src="page1.jpg">
 
 </div>
 
@@ -69,49 +131,176 @@ const pages = [
 
 let currentPage = 0;
 
-const page = document.getElementById("page");
-
 let startX = 0;
 
+let isTurning = false;
+
+const magazine = document.querySelector(".magazine");
+
+
+/* ページをめくる */
+function changePage(direction) {
+
+    if (isTurning) return;
+
+    const nextIndex = currentPage + direction;
+
+    if (nextIndex < 0 || nextIndex >= pages.length) {
+        return;
+    }
+
+    isTurning = true;
+
+    const current = document.getElementById("page");
+
+    const next = document.createElement("img");
+
+    next.className = "page";
+
+    next.src = pages[nextIndex];
+
+    /*
+     * 次のページを裏側に配置
+     */
+    if (direction === 1) {
+
+        next.style.transformOrigin = "center right";
+
+        next.classList.add("next-page");
+
+    } else {
+
+        next.style.transformOrigin = "center left";
+
+        next.classList.add("prev-page");
+
+    }
+
+    magazine.appendChild(next);
+
+
+    /*
+     * アニメーション開始
+     */
+    requestAnimationFrame(() => {
+
+        requestAnimationFrame(() => {
+
+            if (direction === 1) {
+
+                /* 今のページを左へめくる */
+
+                current.style.transformOrigin =
+                    "center left";
+
+                current.style.transform =
+                    "rotateY(-90deg) scale(0.96)";
+
+                current.style.filter =
+                    "brightness(0.75)";
+
+
+                /* 次のページを正面へ */
+
+                next.style.transform =
+                    "rotateY(0deg) scale(1)";
+
+                next.style.filter =
+                    "brightness(1)";
+
+            } else {
+
+                /* 今のページを右へめくる */
+
+                current.style.transformOrigin =
+                    "center right";
+
+                current.style.transform =
+                    "rotateY(90deg) scale(0.96)";
+
+                current.style.filter =
+                    "brightness(0.75)";
+
+
+                /* 前のページを正面へ */
+
+                next.style.transform =
+                    "rotateY(0deg) scale(1)";
+
+                next.style.filter =
+                    "brightness(1)";
+
+            }
+
+        });
+
+    });
+
+
+    /*
+     * めくり終わったら古いページを削除
+     */
+    setTimeout(() => {
+
+        current.remove();
+
+        next.id = "page";
+
+        next.className = "page";
+
+        next.style.transform =
+            "rotateY(0deg) scale(1)";
+
+        next.style.transformOrigin =
+            "center center";
+
+        next.style.filter = "brightness(1)";
+
+        currentPage = nextIndex;
+
+        isTurning = false;
+
+    }, 560);
+
+}
+
+
+/* スワイプ開始 */
 document.addEventListener("touchstart", function(event) {
 
     startX = event.touches[0].clientX;
 
-});
+}, { passive: true });
 
+
+/* スワイプ終了 */
 document.addEventListener("touchend", function(event) {
+
+    if (isTurning) return;
 
     const endX = event.changedTouches[0].clientX;
 
     const distance = startX - endX;
 
-    // 左にスワイプ
+
+    /* 左スワイプ */
+
     if (distance > 50) {
 
-        if (currentPage < pages.length - 1) {
-
-            currentPage++;
-
-            page.src = pages[currentPage];
-
-        }
+        changePage(1);
 
     }
 
-    // 右にスワイプ
+
+    /* 右スワイプ */
+
     else if (distance < -50) {
 
-        if (currentPage > 0) {
-
-            currentPage--;
-
-            page.src = pages[currentPage];
-
-        }
+        changePage(-1);
 
     }
 
-});
+}, { passive: true });
 
 </script>
 
