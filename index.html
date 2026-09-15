@@ -8,19 +8,21 @@
 
 <meta name="viewport"
 
-      content="width=device-width,
+content="width=device-width,
 
-      initial-scale=1.0,
+initial-scale=1.0,
 
-      maximum-scale=1.0,
+maximum-scale=1.0,
 
-      user-scalable=no">
+user-scalable=no">
 
 <title>IBIKA Magazine</title>
 
 <style>
 
-html, body {
+html,
+
+body {
 
     margin: 0;
 
@@ -46,29 +48,25 @@ body {
 
 }
 
-.magazine {
+#viewer {
 
-    position: relative;
+    position: fixed;
 
-    width: 100%;
+    inset: 0;
 
-    height: 100%;
+    display: flex;
 
-    overflow: hidden;
+    justify-content: center;
 
-    perspective: 1400px;
+    align-items: center;
+
+    perspective: 1800px;
 
 }
 
-/* 通常のページ */
-
-.page {
+#page {
 
     position: absolute;
-
-    left: 0;
-
-    top: 0;
 
     width: 100%;
 
@@ -80,123 +78,127 @@ body {
 
     -webkit-user-drag: none;
 
-    backface-visibility: hidden;
+}
+
+#turn {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: none;
 
     transform-style: preserve-3d;
 
-    will-change: transform;
-
-    z-index: 2;
-
-}
-
-/*
-
-================================
-
-  次のページ
-
-================================
-
-*/
-
-.next {
-
-    z-index: 1;
-
-    transform:
-
-        translateX(0)
-
-        rotateY(0deg);
-
     transform-origin: left center;
 
-    filter: brightness(0.92);
+    backface-visibility: hidden;
+
+    background: #111;
 
 }
 
-/*
+#turn img {
 
-================================
+    position: absolute;
 
-  ページを左へめくる
+    inset: 0;
 
-================================
+    width: 100%;
 
-*/
+    height: 100%;
 
-.turning-left {
+    object-fit: contain;
+
+    user-select: none;
+
+    -webkit-user-drag: none;
+
+}
+
+#turn .back {
+
+    transform: rotateY(180deg);
+
+    backface-visibility: hidden;
+
+}
+
+/* 左へページをめくる */
+
+.turn-left {
+
+    display: block;
+
+    animation:
+
+    flipLeft
+
+    0.8s
+
+    ease-in-out
+
+    forwards;
+
+}
+
+/* 右へページを戻す */
+
+.turn-right {
+
+    display: block;
 
     transform-origin: right center;
 
     animation:
 
-        pageTurnLeft
+    flipRight
 
-        0.75s
+    0.8s
 
-        cubic-bezier(.35,.05,.2,1)
+    ease-in-out
 
-        forwards;
+    forwards;
 
 }
 
-@keyframes pageTurnLeft {
+/* 左ページめくり */
+
+@keyframes flipLeft {
 
     0% {
 
         transform:
 
-            rotateY(0deg)
-
-            scaleX(1);
+        rotateY(0deg);
 
         filter:
 
-            brightness(1);
+        brightness(1);
 
     }
 
-    25% {
+    35% {
 
         transform:
 
-            rotateY(-25deg)
-
-            scaleX(.97);
+        rotateY(-70deg);
 
         filter:
 
-            brightness(.96);
+        brightness(0.88);
 
     }
 
-    55% {
+    65% {
 
         transform:
 
-            rotateY(-70deg)
-
-            scaleX(.90);
+        rotateY(-125deg);
 
         filter:
 
-            brightness(.82);
-
-    }
-
-    78% {
-
-        transform:
-
-            rotateY(-125deg)
-
-            scaleX(.94);
-
-        filter:
-
-            brightness(.72);
+        brightness(0.80);
 
     }
 
@@ -204,99 +206,53 @@ body {
 
         transform:
 
-            rotateY(-180deg)
-
-            scaleX(1);
+        rotateY(-180deg);
 
         filter:
 
-            brightness(.65);
+        brightness(0.72);
 
     }
 
 }
 
-/*
+/* 右ページめくり */
 
-================================
-
-  ページを右へめくる
-
-================================
-
-*/
-
-.turning-right {
-
-    transform-origin: left center;
-
-    animation:
-
-        pageTurnRight
-
-        0.75s
-
-        cubic-bezier(.35,.05,.2,1)
-
-        forwards;
-
-}
-
-@keyframes pageTurnRight {
+@keyframes flipRight {
 
     0% {
 
         transform:
 
-            rotateY(0deg)
-
-            scaleX(1);
+        rotateY(0deg);
 
         filter:
 
-            brightness(1);
+        brightness(1);
 
     }
 
-    25% {
+    35% {
 
         transform:
 
-            rotateY(25deg)
-
-            scaleX(.97);
+        rotateY(70deg);
 
         filter:
 
-            brightness(.96);
+        brightness(0.88);
 
     }
 
-    55% {
+    65% {
 
         transform:
 
-            rotateY(70deg)
-
-            scaleX(.90);
+        rotateY(125deg);
 
         filter:
 
-            brightness(.82);
-
-    }
-
-    78% {
-
-        transform:
-
-            rotateY(125deg)
-
-            scaleX(.94);
-
-        filter:
-
-            brightness(.72);
+        brightness(0.80);
 
     }
 
@@ -304,41 +260,13 @@ body {
 
         transform:
 
-            rotateY(180deg)
-
-            scaleX(1);
+        rotateY(180deg);
 
         filter:
 
-            brightness(.65);
+        brightness(0.72);
 
     }
-
-}
-
-/*
-
-================================
-
-  紙っぽい影
-
-================================
-
-*/
-
-.page::after {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-
-    bottom: 0;
-
-    width: 8%;
-
-    pointer-events: none;
 
 }
 
@@ -348,17 +276,55 @@ body {
 
 <body>
 
-<div class="magazine">
+<div id="viewer">
 
-    <img id="page"
+    <img
 
-         class="page"
+        id="page"
 
-         src="page1.jpg">
+        src="page1.jpg"
+
+        alt=""
+
+    >
+
+    <div id="turn">
+
+        <img
+
+            class="front"
+
+            src=""
+
+            alt=""
+
+        >
+
+        <img
+
+            class="back"
+
+            src=""
+
+            alt=""
+
+        >
+
+    </div>
 
 </div>
 
 <script>
+
+/*
+
+================================
+
+写真一覧
+
+================================
+
+*/
 
 const pages = [
 
@@ -376,39 +342,53 @@ const pages = [
 
 let currentPage = 0;
 
-let startX = 0;
-
 let isTurning = false;
 
-const magazine =
+let startX = 0;
 
-    document.querySelector(".magazine");
+let startY = 0;
+
+const page =
+
+document.getElementById("page");
+
+const turn =
+
+document.getElementById("turn");
+
+const front =
+
+turn.querySelector(".front");
+
+const back =
+
+turn.querySelector(".back");
 
 /*
 
-========================
+================================
 
- ページをめくる
+ページをめくる
 
-========================
+================================
 
 */
 
-function changePage(direction) {
+function turnPage(nextPage) {
 
-    if (isTurning) return;
+    if (isTurning) {
 
-    const nextIndex =
+        return;
 
-        currentPage + direction;
+    }
 
-    if (
+    if (nextPage < 0) {
 
-        nextIndex < 0 ||
+        return;
 
-        nextIndex >= pages.length
+    }
 
-    ) {
+    if (nextPage >= pages.length) {
 
         return;
 
@@ -416,163 +396,217 @@ function changePage(direction) {
 
     isTurning = true;
 
-    const current =
-
-        document.getElementById("page");
-
     /*
 
-    新しいページを作る
+    現在のページ
 
     */
 
-    const next =
+    front.src =
 
-        document.createElement("img");
-
-    next.src =
-
-        pages[nextIndex];
-
-    next.className =
-
-        "page next";
+    pages[currentPage];
 
     /*
 
-    次のページを現在ページの下に置く
+    めくった後のページ
 
     */
 
-    magazine.appendChild(next);
+    back.src =
+
+    pages[nextPage];
 
     /*
 
-    めくる
+    次のページへ
 
     */
 
-    if (direction === 1) {
+    if (nextPage > currentPage) {
 
-        current.classList.add(
+        turn.className =
 
-            "turning-left"
-
-        );
-
-    } else {
-
-        current.classList.add(
-
-            "turning-right"
-
-        );
+        "turn-left";
 
     }
 
+    else {
+
+        turn.className =
+
+        "turn-right";
+
+    }
+
+    turn.style.display =
+
+    "block";
+
     /*
 
-    アニメーション終了
+    アニメーション終了後
 
     */
 
     setTimeout(function() {
 
-        current.remove();
-
-        next.id = "page";
-
-        next.className = "page";
-
         currentPage =
 
-            nextIndex;
+        nextPage;
+
+        page.src =
+
+        pages[currentPage];
+
+        turn.style.display =
+
+        "none";
+
+        turn.className =
+
+        "";
 
         isTurning = false;
 
-    }, 750);
+    }, 820);
 
 }
 
 /*
 
-========================
+================================
 
- スワイプ開始
+指を触った場所
 
-========================
+================================
 
 */
 
 document.addEventListener(
 
-    "touchstart",
+"touchstart",
 
-    function(event) {
+function(event) {
 
-        startX =
+    if (
 
-            event.touches[0].clientX;
+        event.touches.length !== 1
 
-    },
+    ) {
 
-    { passive: true }
+        return;
+
+    }
+
+    startX =
+
+    event.touches[0].clientX;
+
+    startY =
+
+    event.touches[0].clientY;
+
+},
+
+{ passive: true }
 
 );
 
 /*
 
-========================
+================================
 
- スワイプ終了
+指を離した場所
 
-========================
+================================
 
 */
 
 document.addEventListener(
 
-    "touchend",
+"touchend",
 
-    function(event) {
+function(event) {
 
-        if (isTurning) return;
+    if (
 
-        const endX =
+        event.changedTouches.length === 0
 
-            event.changedTouches[0].clientX;
+    ) {
 
-        const distance =
+        return;
 
-            startX - endX;
+    }
+
+    const endX =
+
+    event.changedTouches[0].clientX;
+
+    const endY =
+
+    event.changedTouches[0].clientY;
+
+    const distanceX =
+
+    startX - endX;
+
+    const distanceY =
+
+    startY - endY;
+
+    /*
+
+    横方向のスワイプだけ反応
+
+    */
+
+    if (
+
+        Math.abs(distanceX) > 50 &&
+
+        Math.abs(distanceX) >
+
+        Math.abs(distanceY) * 1.2
+
+    ) {
 
         /*
 
-        左へ
+        左へスワイプ
 
         */
 
-        if (distance > 50) {
+        if (distanceX > 0) {
 
-            changePage(1);
+            turnPage(
+
+                currentPage + 1
+
+            );
 
         }
 
         /*
 
-        右へ
+        右へスワイプ
 
         */
 
-        else if (distance < -50) {
+        else {
 
-            changePage(-1);
+            turnPage(
+
+                currentPage - 1
+
+            );
 
         }
 
-    },
+    }
 
-    { passive: true }
+},
+
+{ passive: true }
 
 );
 
