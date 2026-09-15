@@ -162,8 +162,6 @@ body {
 
    次のページへ
 
-   左へめくる
-
 ================================ */
 
 .turn-left {
@@ -223,8 +221,6 @@ body {
 /* ================================
 
    前のページへ戻る
-
-   右へめくる
 
 ================================ */
 
@@ -296,7 +292,7 @@ body {
 
         id="page"
 
-        src="page1.jpg"
+        src="page1.jpg.JPEG"
 
         alt=""
 
@@ -340,7 +336,7 @@ body {
 
 const pages = [
 
-    "page1.jpg",
+    "page1.jpg.JPEG",
 
     "page2.jpg.JPG",
 
@@ -348,7 +344,49 @@ const pages = [
 
     "page4.jpg.JPG",
 
-    "page5.jpg.JPG"
+    "page5.jpg.JPG",
+
+    "page6.jpg.JPG",
+
+    "page7.jpg.JPG",
+
+    "page8.jpg.JPG",
+
+    "page9.jpg.JPG",
+
+    "page10.jpg.JPG",
+
+    "page11.jpg.JPG",
+
+    "page12.jpg.JPG",
+
+    "page13.jpg.JPG",
+
+    "page14.jpg.JPG",
+
+    "page15.jpg.JPG",
+
+    "page16.jpg.JPG",
+
+    "page17.jpg.JPG",
+
+    "page18.jpg.JPG",
+
+    "page19.jpg.JPG",
+
+    "page20.jpg.JPG",
+
+    "page21.jpg.JPG",
+
+    "page22.jpg.JPG",
+
+    "page23.jpg.JPG",
+
+    "page24.jpg.JPG",
+
+    "page25.jpg.JPG",
+
+    "page26.jpg.JPG"
 
 ];
 
@@ -384,35 +422,17 @@ const back =
 
 function turnPage(nextPage) {
 
-    /*
-
-    アニメーション中は操作しない
-
-    */
-
     if (isTurning) {
 
         return;
 
     }
 
-    /*
-
-    最初より前には行かない
-
-    */
-
     if (nextPage < 0) {
 
         return;
 
     }
-
-    /*
-
-    最後より後には行かない
-
-    */
 
     if (nextPage >= pages.length) {
 
@@ -426,41 +446,29 @@ function turnPage(nextPage) {
 
         currentPage;
 
-    /* ================================
-
-       めくるページ
-
-    ================================= */
+    /* めくる前のページ */
 
     front.src =
 
         pages[oldPage];
 
-    /* ================================
-
-       裏側のページ
-
-    ================================= */
+    /* めくった後のページ */
 
     back.src =
 
         pages[nextPage];
 
-    /* ================================
+    /*
 
-       ★すぐ次の写真を表示
+       アニメーション開始と同時に
 
-    ================================= */
+       次の写真を表示
+
+    */
 
     page.src =
 
         pages[nextPage];
-
-    /* ================================
-
-       ページ番号を変更
-
-    ================================= */
 
     currentPage =
 
@@ -600,11 +608,7 @@ document.addEventListener(
 
             startY - endY;
 
-        /*
-
-        横方向のスワイプだけ反応
-
-        */
+    /* 横方向のスワイプだけ反応 */
 
         if (
 
@@ -616,7 +620,7 @@ document.addEventListener(
 
         ) {
 
-            /* ============================
+            /*
 
                左へスワイプ
 
@@ -624,7 +628,7 @@ document.addEventListener(
 
                次のページ
 
-            ============================ */
+            */
 
             if (distanceX > 0) {
 
@@ -636,7 +640,7 @@ document.addEventListener(
 
             }
 
-            /* ============================
+            /*
 
                右へスワイプ
 
@@ -644,7 +648,7 @@ document.addEventListener(
 
                前のページ
 
-            ============================ */
+            */
 
             else {
 
