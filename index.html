@@ -1,25 +1,3 @@
-<!DOCTYPE html>
-
-<html lang="ja">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-
-      content="width=device-width,
-
-      initial-scale=1.0,
-
-      maximum-scale=1.0,
-
-      user-scalable=no">
-
-<title>IBIKA Magazine</title>
-
-<style>
-
 html, body {
 
     margin: 0;
@@ -48,15 +26,15 @@ body {
 
 .magazine {
 
+    position: relative;
+
     width: 100%;
 
     height: 100%;
 
-    position: relative;
+    overflow: hidden;
 
     perspective: 1800px;
-
-    overflow: hidden;
 
 }
 
@@ -66,13 +44,13 @@ body {
 
     position: absolute;
 
-    width: 100%;
-
-    height: 100%;
-
     left: 0;
 
     top: 0;
+
+    width: 100%;
+
+    height: 100%;
 
     object-fit: contain;
 
@@ -80,306 +58,216 @@ body {
 
     -webkit-user-drag: none;
 
-    transform-origin: center left;
-
     backface-visibility: hidden;
 
-    transition:
+    transform-style: preserve-3d;
 
-        transform 0.55s cubic-bezier(.4,0,.2,1),
+    will-change: transform, filter;
 
-        filter 0.55s ease;
-
-    will-change: transform;
-
-}
-
-/* 左へめくる */
-
-.turn-left {
-
-    transform:
-
-        rotateY(-90deg)
-
-        scale(0.96);
-
-    filter: brightness(0.75);
-
-}
-
-/* 右へめくる */
-
-.turn-right {
-
-    transform-origin: center right;
-
-    transform:
-
-        rotateY(90deg)
-
-        scale(0.96);
-
-    filter: brightness(0.75);
+    z-index: 2;
 
 }
 
 /* 次のページ */
 
-.next-page {
+.next {
 
-    transform:
-
-        rotateY(90deg)
-
-        scale(0.96);
-
-    transform-origin: center right;
-
-    filter: brightness(0.75);
+    z-index: 1;
 
 }
 
-/* 前のページ */
+/* =========================
 
-.prev-page {
+   左へペラッとめくる
 
-    transform:
+   ========================= */
 
-        rotateY(-90deg)
+.turning-left {
 
-        scale(0.96);
+    transform-origin: right center;
 
-    transform-origin: center left;
+    animation:
 
-    filter: brightness(0.75);
+        softPageLeft
+
+        0.7s
+
+        cubic-bezier(.25,.7,.25,1)
+
+        forwards;
 
 }
 
-</style>
+@keyframes softPageLeft {
 
-</head>
+    0% {
 
-<body>
+        transform:
 
-<div class="magazine">
+            rotateY(0deg)
 
-    <img id="page"
+            scaleX(1);
 
-         class="page"
-
-         src="page1.jpg">
-
-</div>
-
-<script>
-
-const pages = [
-
-    "page1.jpg",
-
-    "page2.jpg.JPG",
-
-    "page3.jpg.JPG",
-
-    "page4.jpg.JPG",
-
-    "page5.jpg.JPG"
-
-];
-
-let currentPage = 0;
-
-let startX = 0;
-
-let isTurning = false;
-
-const magazine = document.querySelector(".magazine");
-
-/* ページをめくる */
-
-function changePage(direction) {
-
-    if (isTurning) return;
-
-    const nextIndex = currentPage + direction;
-
-    if (nextIndex < 0 || nextIndex >= pages.length) {
-
-        return;
+        filter: brightness(1);
 
     }
 
-    isTurning = true;
+    20% {
 
-    const current = document.getElementById("page");
+        transform:
 
-    const next = document.createElement("img");
+            rotateY(-12deg)
 
-    next.className = "page";
+            scaleX(.985);
 
-    next.src = pages[nextIndex];
-
-    /*
-
-     * 次のページを裏側に配置
-
-     */
-
-    if (direction === 1) {
-
-        next.style.transformOrigin = "center right";
-
-        next.classList.add("next-page");
-
-    } else {
-
-        next.style.transformOrigin = "center left";
-
-        next.classList.add("prev-page");
+        filter: brightness(.98);
 
     }
 
-    magazine.appendChild(next);
+    45% {
 
-    /*
+        transform:
 
-     * アニメーション開始
+            rotateY(-42deg)
 
-     */
+            scaleX(.94);
 
-    requestAnimationFrame(() => {
+        filter: brightness(.92);
 
-        requestAnimationFrame(() => {
+    }
 
-            if (direction === 1) {
+    70% {
 
-                /* 今のページを左へめくる */
+        transform:
 
-                current.style.transformOrigin =
+            rotateY(-105deg)
 
-                    "center left";
+            scaleX(.96);
 
-                current.style.transform =
+        filter: brightness(.82);
 
-                    "rotateY(-90deg) scale(0.96)";
+    }
 
-                current.style.filter =
+    88% {
 
-                    "brightness(0.75)";
+        transform:
 
-                /* 次のページを正面へ */
+            rotateY(-150deg)
 
-                next.style.transform =
+            scaleX(.99);
 
-                    "rotateY(0deg) scale(1)";
+        filter: brightness(.76);
 
-                next.style.filter =
+    }
 
-                    "brightness(1)";
+    100% {
 
-            } else {
+        transform:
 
-                /* 今のページを右へめくる */
+            rotateY(-180deg)
 
-                current.style.transformOrigin =
+            scaleX(1);
 
-                    "center right";
+        filter: brightness(.72);
 
-                current.style.transform =
-
-                    "rotateY(90deg) scale(0.96)";
-
-                current.style.filter =
-
-                    "brightness(0.75)";
-
-                /* 前のページを正面へ */
-
-                next.style.transform =
-
-                    "rotateY(0deg) scale(1)";
-
-                next.style.filter =
-
-                    "brightness(1)";
-
-            }
-
-        });
-
-    });
-
-    /*
-
-     * めくり終わったら古いページを削除
-
-     */
-
-    setTimeout(() => {
-
-        current.remove();
-
-        next.id = "page";
-
-        next.className = "page";
-
-        next.style.transform =
-
-            "rotateY(0deg) scale(1)";
-
-        next.style.transformOrigin =
-
-            "center center";
-
-        next.style.filter = "brightness(1)";
-
-        currentPage = nextIndex;
-
-        isTurning = false;
-
-    }, 560);
+    }
 
 }
 
-/* スワイプ開始 */
+/* =========================
 
-document.addEventListener("touchstart", function(event) {
+   右へペラッと戻す
 
-    startX = event.touches[0].clientX;
+   ========================= */
 
-}, { passive: true });
+.turning-right {
 
-/* スワイプ終了 */
+    transform-origin: left center;
 
-document.addEventListener("touchend", function(event) {
+    animation:
 
-    if (isTurning) return;
+        softPageRight
 
-    const endX = event.changedTouches[0].clientX;
+        0.7s
 
-    const distance = startX - endX;
+        cubic-bezier(.25,.7,.25,1)
 
-    /* 左スワイプ */
+        forwards;
 
-    if (distance > 50) {
+}
 
-        changePage(1);
+@keyframes softPageRight {
+
+    0% {
+
+        transform:
+
+            rotateY(0deg)
+
+            scaleX(1);
+
+        filter: brightness(1);
 
     }
 
-    /* 右スワイプ */
+    20% {
 
-    else if (distance < -50) {
+        transform:
 
-        changePage(-1);
+            rotateY(12deg)
+
+            scaleX(.985);
+
+        filter: brightness(.98);
 
     }
 
-}, { passive: true });
+    45% {
 
-</script>
+        transform:
 
-</body>
+            rotateY(42deg)
 
-</html>
+            scaleX(.94);
+
+        filter: brightness(.92);
+
+    }
+
+    70% {
+
+        transform:
+
+            rotateY(105deg)
+
+            scaleX(.96);
+
+        filter: brightness(.82);
+
+    }
+
+    88% {
+
+        transform:
+
+            rotateY(150deg)
+
+            scaleX(.99);
+
+        filter: brightness(.76);
+
+    }
+
+    100% {
+
+        transform:
+
+            rotateY(180deg)
+
+            scaleX(1);
+
+        filter: brightness(.72);
+
+    }
+
+}
